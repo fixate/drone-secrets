@@ -20,19 +20,32 @@ func main() {
 	app.EnableBashCompletion = true
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:   "f, manifest",
-			Usage:  "File manifest to use for secret creation",
-			EnvVar: "DRONE_SECRET_MANIFEST",
+			Name:   "t, token",
+			Usage:  "server auth token",
+			EnvVar: "DRONE_TOKEN",
 		},
 		cli.StringFlag{
-			Name:   "server",
-			Usage:  "drone server address",
-			EnvVar: "DRONE_SERVER_ADDRESS",
+			Name:   "s, server",
+			Usage:  "server location",
+			EnvVar: "DRONE_SERVER",
+		},
+		cli.BoolFlag{
+			Name:   "skip-verify",
+			Usage:  "skip ssl verfification",
+			EnvVar: "DRONE_SKIP_VERIFY",
+			Hidden: true,
 		},
 		cli.StringFlag{
-			Name:   "token",
-			Usage:  "drone server token",
-			EnvVar: "DRONE_SERVER_TOKEN",
+			Name:   "socks-proxy",
+			Usage:  "socks proxy address",
+			EnvVar: "SOCKS_PROXY",
+			Hidden: true,
+		},
+		cli.BoolFlag{
+			Name:   "socks-proxy-off",
+			Usage:  "socks proxy ignored",
+			EnvVar: "SOCKS_PROXY_OFF",
+			Hidden: true,
 		},
 	}
 	app.Commands = []cli.Command{

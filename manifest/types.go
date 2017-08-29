@@ -2,66 +2,70 @@ package manifest
 
 import (
 	"fmt"
+	"log"
+	"strings"
 
 	"github.com/drone/drone-go/drone"
 )
 
 type SecretDef struct {
-	Name: string `yaml:name`,
-	Value: string `yaml:value`,
-	Images: []string `yaml:images`,
-	Events: []string `yaml:events`,
+	Name   string   `yaml:name`
+	Value  string   `yaml:value`
+	Items  []string `yaml:items`
+	Images []string `yaml:images`
+	Events []string `yaml:events`
 }
 
 type Secret struct {
-	Repo: string `yaml:repo`,
-	Items: []SecretDef `yaml:items`,
+	Repo  string      `yaml:repo`
+	Items []SecretDef `yaml:items`
 }
 
 type SecretsManifest struct {
-	Secrets: []Secret `yaml:secrets`,
+	Secrets []Secret `yaml:secrets`
 }
 
-func toDroneEvents(events []string) []string error {
-	var result []string;
-	for evt := range events {
-		var event string;
-		switch evt {
-		case "pr":
-		case "pull-request":
-			event = drone.EventPullRequest
-			break
-		case "push":
-			event = drone.EventPush
-			break
-		case "tag":
-			event = drone.EventTag
-			break
-		case "deployment":
-			event = drone.EventDeploy
-			break
+func toDroneEvent(event string) (string, error) {
+	switch event {
+	case "pr", "pull-request", "pull":
+		return drone.EventPull, nil
+	case "push":
+		return drone.EventPush, nil
+	case "tag":
+		return drone.EventTag, nil
+	case "deployment":
+		return drone.EventDeploy, nil
 
-		default:
-			return nil, fmt.Errorf("manifest: Invalid event type '%s'", evt)
-		}
-
-		result = append(result, event)
+	default:
+		return "", fmt.Errorf("manifest: Invalid event type '%s'", event)
 	}
-	return result, nil;
 }
 
-func (inst *SecretDef) ToDroneSecret() []drone.Secret error {
+func (inst *SecretDef) ToDroneSecret() (*drone.Secret, error) {
 	converted := &drone.Secret{}
 	converted.Name = inst.Name
-	converted.Value = inst.Value
-	converted.Images = inst.Images
-	newEvents, err := toEvents(inst.Events)
-	if err != nil {
-		return err
+	if len(inst.Value) != 0 {
+		converted.Value = inst.Value
 	}
-	converted.Events = newEvents 
+
+	if len(inst.Items) != 0 {
+		converted.Value = strings.Join(inst.Items, ",")
+	}
+
+	if len(inst.Value) != 0 && len(inst.Items) != 0 {
+		log.Println("WARNING: setting the value and items keys for a secret is invalid. Items will be preferred.")
+	}
+
+	converted.Images = inst.Images
+
+	for _, evt := range inst.Events {
+		convertedEvt, err := toDroneEvent(evt)
+		if err != nil {
+			return converted, err
+		}
+
+		converted.Events = append(converted.Events, convertedEvt)
+	}
+
 	return converted, nil
 }
-
-
-

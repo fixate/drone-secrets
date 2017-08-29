@@ -1,21 +1,21 @@
 package manifest
 
 import (
-	"ioutil"
+	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
 )
 
-func Load(file string) SecretsManifest, error {
-	data, ferr := ioutil.ReadFile(path)
-	if ferr != nil {
-		return nil, ferr
+func Load(path string) (*SecretsManifest, error) {
+	data, err := ioutil.ReadFile(path)
+	doc := &SecretsManifest{}
+	if err != nil {
+		return doc, err
 	}
 
-	doc := SecretsManifest{}
-	err := yaml.Unmarshal(byte[](data), &doc)
+	err = yaml.Unmarshal([]byte(data), doc)
 	if err != nil {
-		return nil, err
+		return doc, err
 	}
 
 	// TODO: verify manifest
