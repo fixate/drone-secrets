@@ -1,0 +1,13 @@
+---
+secrets:
+- repo: my/repo:
+  items:
+  - name: MY_SECRET
+    value: 12345
+
+  - name: SLACK_WEBHOOK
+    value: abcde
+    events: push, tag
+    images: 
+      - plugins/slack
+      - plugins/slack:*
