@@ -1,4 +1,4 @@
-.PHONY: all deps fmt vet test docker builddev
+.PHONY: all deps fmt vet test builddev
 
 EXECUTABLE ?= drone-secrets
 IMAGE ?= fixate/$(EXECUTABLE):latest
@@ -23,9 +23,6 @@ test:
 
 $(EXECUTABLE): $(wildcard *.go)
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags '-s -w $(LDFLAGS)'
-
-docker: $(EXECUTABLE)
-	docker build --rm -t $(IMAGE) .
 
 builddev:
 	go build -ldflags '-s -w $(LDFLAGS)'
