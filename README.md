@@ -4,7 +4,7 @@ Will set drone secrets to what is in a yaml file
 
 ### Install:
 
-See releases or build repo using `make build` or `make builddev`
+See [releases](https://github.com/fixate/drone-secrets/releases/latest) or build repo using `make build` or `make builddev`
 
 TODO:
 
