@@ -20,6 +20,12 @@
   revision = "b68f5469dff16e102bd6a2d5b3e79341c938d736"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/logrusorgru/aurora"
+  packages = ["."]
+  revision = "b9c3722b64a1976e0624448ee7f5a0744b8cf629"
+
+[[projects]]
   name = "github.com/urfave/cli"
   packages = ["."]
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
@@ -52,6 +58,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a21d663f6a8d14580b5be077c9d0a8606bd87a258e9be38023513ad55c84b6e1"
+  inputs-digest = "2cb0fd22f76e0348def7207b1a102086badbccbfaa7371fd1d7263ba05026211"
   solver-name = "gps-cdcl"
   solver-version = 1

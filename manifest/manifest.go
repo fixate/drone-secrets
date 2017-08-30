@@ -6,14 +6,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func Load(path string) (*SecretsManifest, error) {
+func Load(path string) (SecretsManifest, error) {
 	data, err := ioutil.ReadFile(path)
-	doc := &SecretsManifest{}
+	doc := make(SecretsManifest, 0)
 	if err != nil {
 		return doc, err
 	}
 
-	err = yaml.Unmarshal([]byte(data), doc)
+	err = yaml.Unmarshal([]byte(data), &doc)
 	if err != nil {
 		return doc, err
 	}

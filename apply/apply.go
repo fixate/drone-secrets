@@ -3,13 +3,13 @@ package apply
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"strings"
 
 	"github.com/drone/drone-go/drone"
 	"github.com/fixate/drone-secrets/client"
 	mfst "github.com/fixate/drone-secrets/manifest"
 	"github.com/fixate/drone-secrets/utils"
+	. "github.com/logrusorgru/aurora"
 
 	"github.com/urfave/cli"
 )
@@ -23,10 +23,6 @@ var Command = cli.Command{
 			Name:   "f, manifest",
 			Usage:  "File manifest to use for secret creation",
 			EnvVar: "DRONE_SECRET_MANIFEST",
-		},
-		cli.BoolFlag{
-			Name:  "clean",
-			Usage: "Remove secrets that are not included in the manifest",
 		},
 	},
 }
@@ -51,29 +47,34 @@ func run(c *cli.Context) error {
 	return processManifest(c, client, manifest)
 }
 
-func processManifest(c *cli.Context, client drone.Client, manifest *mfst.SecretsManifest) error {
-	for _, manifestSecret := range manifest.Secrets {
+func processManifest(c *cli.Context, client drone.Client, manifest mfst.SecretsManifest) error {
+	for _, manifestSecret := range manifest {
 		if err := ensureSecrets(client, &manifestSecret); err != nil {
 			return err
 		}
 	}
 
-	if c.Bool("clean") {
-		fmt.Print("TODO: implement clean")
-	}
-
 	return nil
 }
 
-func ensureSecrets(client drone.Client, manifestSecret *mfst.Secret) error {
-	owner, name, err := utils.ParseRepo(manifestSecret.Repo)
+func ensureSecrets(client drone.Client, manifestSecret *mfst.SecretDef) error {
+	for _, repo := range manifestSecret.Repo {
+		if err := ensureSecretsForRepo(client, manifestSecret, repo); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func ensureSecretsForRepo(client drone.Client, manifestSecret *mfst.SecretDef, repo string) error {
+	owner, name, err := utils.ParseRepo(repo)
 	if err != nil {
 		return err
 	}
 
-	log.Printf("Creating secrets for repository '%s'.\n", manifestSecret.Repo)
+	fmt.Printf("Creating secrets for repository '%s'.\n\n", Bold(repo))
 
-	secrets := manifestSecret.Items
+	secrets := manifestSecret.Secrets
 	for _, scrt := range secrets {
 		secret, err := scrt.ToDroneSecret()
 		if err != nil {
@@ -93,21 +94,15 @@ func ensureSecrets(client drone.Client, manifestSecret *mfst.Secret) error {
 			secret.Value = string(out)
 		}
 
-		_, err = client.Secret(owner, name, secret.Name)
+		_, err = client.SecretCreate(owner, name, secret)
 		if err != nil {
-			_, err = client.SecretCreate(owner, name, secret)
-			if err != nil {
-				return err
-			}
-			log.Printf("'%s' created.\n", secret.Name)
+			fmt.Printf("%s %s\n", Green("✓"), Bold(secret.Name))
 		} else {
-			_, err = client.SecretUpdate(owner, name, secret)
-			if err != nil {
-				return err
-			}
-			log.Printf("'%s' updated.\n", secret.Name)
+			fmt.Printf("%s %s (Error: %s).\n", Red("✕"), Bold(secret.Name), err)
 		}
 	}
+
+	fmt.Print("\n")
 
 	return nil
 }

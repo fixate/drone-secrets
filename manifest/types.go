@@ -2,27 +2,44 @@ package manifest
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/drone/drone-go/drone"
 )
 
-type SecretDef struct {
-	Name   string   `yaml:name`
-	Value  string   `yaml:value`
-	Items  []string `yaml:items`
-	Images []string `yaml:images`
-	Events []string `yaml:events`
-}
-
 type Secret struct {
-	Repo  string      `yaml:repo`
-	Items []SecretDef `yaml:items`
+	Name   string      `yaml:name`
+	Value  StringArray `yaml:value`
+	Images StringArray `yaml:images`
+	Events StringArray `yaml:events`
 }
 
-type SecretsManifest struct {
-	Secrets []Secret `yaml:secrets`
+type SecretDef struct {
+	Repo    StringArray `yaml:repo`
+	Secrets []Secret    `yaml:secrets`
+}
+
+type SecretsManifest []SecretDef
+type StringArray []string
+
+func (a *StringArray) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var multi []string
+	err := unmarshal(&multi)
+	if err != nil {
+		var single string
+		err := unmarshal(&single)
+		if err != nil {
+			return err
+		}
+		split := strings.Split(single, ",")
+		for i, part := range split {
+			split[i] = strings.Trim(part, " ")
+		}
+		*a = split
+	} else {
+		*a = multi
+	}
+	return nil
 }
 
 func toDroneEvent(event string) (string, error) {
@@ -41,21 +58,13 @@ func toDroneEvent(event string) (string, error) {
 	}
 }
 
-func (inst *SecretDef) ToDroneSecret() (*drone.Secret, error) {
+func (inst *Secret) ToDroneSecret() (*drone.Secret, error) {
 	converted := &drone.Secret{}
 	converted.Name = inst.Name
+
 	if len(inst.Value) != 0 {
-		converted.Value = inst.Value
+		converted.Value = strings.Join(inst.Value, ",")
 	}
-
-	if len(inst.Items) != 0 {
-		converted.Value = strings.Join(inst.Items, ",")
-	}
-
-	if len(inst.Value) != 0 && len(inst.Items) != 0 {
-		log.Println("WARNING: setting the value and items keys for a secret is invalid. Items will be preferred.")
-	}
-
 	converted.Images = inst.Images
 
 	for _, evt := range inst.Events {
