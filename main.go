@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -10,7 +9,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-const version string = "0.0.1"
+const version string = "0.0.2"
 
 func main() {
 	app := cli.NewApp()
