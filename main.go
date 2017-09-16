@@ -56,8 +56,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
-func run(c *cli.Context) error {
-	fmt.Println("herheerere")
-	return nil
-}
