@@ -98,7 +98,8 @@ func ensureSecretsForRepo(client drone.Client, manifestSecret *mfst.SecretDef, r
 		if err != nil {
 			fmt.Printf("%s %s\n", Green("✓"), Bold(secret.Name))
 		} else {
-			fmt.Printf("%s %s (Error: %s).\n", Red("✕"), Bold(secret.Name), err.Error())
+			fmt.Printf("%s %s.\n", Red("✕"), Bold(secret.Name))
+			fmt.Println(err)
 		}
 	}
 
