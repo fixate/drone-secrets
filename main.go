@@ -9,7 +9,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-const version string = "0.0.4"
+const version string = "0.0.5"
 
 func main() {
 	app := cli.NewApp()
@@ -52,6 +52,7 @@ func main() {
 	}
 
 	if err := app.Run(os.Args); err != nil {
+		log.Println("Fatal Error")
 		log.Fatal(err)
 	}
 }
