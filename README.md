@@ -25,13 +25,13 @@ drone-secrets apply -f manifest.yml
 # Comma delimited or list accepted syntax accepted for repo, value, events and images
 - repo: my/repo, my/other-repo
   secrets:
-	# Set for my/repo and my/other-repo
+  # Set for my/repo and my/other-repo
   - name: MY_SECRET
     value: 12345
 
   - name: SLACK_WEBHOOK
     value: abcde
-		# Default events are push, tag, deployment
+    # Default events are push, tag, deployment
     events: push,tag
     images: 
       - plugins/slack
