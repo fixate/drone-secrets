@@ -12,6 +12,15 @@ TODO:
 - Make go get work to fetch the command (I'm new to go so if people start caring
 		about this project I'll take things further)
 
+## Configuration
+
+Put this in your shell environment (probably `.bashrc`)
+
+```shell
+export DRONE_SERVER=<address to your build server>
+export DRONE_TOKEN=<your token (hamburger menu > token)>
+```
+
 ### Usage:
 
 ```shell
