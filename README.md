@@ -4,7 +4,7 @@ Will set secrets from a yaml manifest on your drone server.
 
 ### Motivation
 
-Currently, there is no simple declaritive way to manage many drone secrets. It's a hassel and error prone to use `drone-cli` to set secrets per repo, per image in bulk. Your manifest file can be kept in source control (should be encrypted and/or only accessible by trusted entities) and is easily understood. Once `drone-secrets` runs you'll know the right secres are set.
+Currently, there is no simple declaritive way to manage many drone secrets. It's a hassel and error prone to use `drone-cli` to set secrets per repo, per image in bulk. A shell script quickly becomes unwieldy. With `drone-secrets` you can create a yaml manifest to clearly define your configuration for your repos, per image. Common configuration can be set for multiple repos to keep things DRY. If you need to restore your secrets (say if you mistakenly deleted your repo), you have a way to quickly set all the required configuration. The manifest(s) can be kept in source control.
 
 ### Install:
 
