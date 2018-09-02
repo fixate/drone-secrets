@@ -13,7 +13,7 @@ See [releases](https://github.com/fixate/drone-secrets/releases/latest) or build
 TODO:
 
 - Use CI for github releases for multiple targets
-- Make go get work to fetch the command (I'm new to go so if people start caring
+- Make go get work to fetch the command (If people start caring
 		about this project I'll take things further)
 
 ## Configuration
