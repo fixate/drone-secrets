@@ -48,7 +48,9 @@ drone-secrets apply -f manifest.yml
     events: push,tag
     image: plugins/slack
 
-- repo: my/repo
+- repo: 
+    - my/repo
+    - yet/another/repo
   secrets:
   # Setting value to a list	  
   - name: PLUGINS_ENVIRONMENT_VARIABLES
