@@ -37,33 +37,33 @@ drone-secrets apply -f manifest.yml
 ---
 # Comma delimited or list accepted syntax accepted for repo, value, events and images
 - repo: my/repo, my/other-repo
-	  secrets:
-	  # Set for my/repo and my/other-repo
-	  - name: MY_SECRET
-	    value: 12345
+  secrets:
+  # Set for my/repo and my/other-repo
+  - name: MY_SECRET
+    value: 12345
 
-	  - name: SLACK_WEBHOOK
-	    value: abcde
-	    # Default events are push, tag, deployment
-	    events: push,tag
-	    image: plugins/slack
+  - name: SLACK_WEBHOOK
+    value: abcde
+    # Default events are push, tag, deployment
+    events: push,tag
+    image: plugins/slack
 
 - repo: my/repo
   secrets:
-	  # Setting value to a list	  
-	  - name: PLUGINS_ENVIRONMENT_VARIABLES
-	    events: 
-	      - push
-	      - tag
-	    # List types are converted to a comma delimited string
-	    value:
-	      - PORT=1234
-	      - SECRET_TOKEN=abcd1234
-	    # Same as:
-	    # value: PORT=1234,SECRET_TOKEN=abcde1234,...
-	    images: 
-	      - plugins/ecs
-	      - plugins/ecs:*
+  # Setting value to a list	  
+  - name: PLUGINS_ENVIRONMENT_VARIABLES
+    events: 
+      - push
+      - tag
+    # List types are converted to a comma delimited string
+    value:
+      - PORT=1234
+      - SECRET_TOKEN=abcd1234
+    # Same as:
+    # value: PORT=1234,SECRET_TOKEN=abcde1234,...
+    images: 
+      - plugins/ecs
+      - plugins/ecs:*
 ```
 
 ## TODO:
