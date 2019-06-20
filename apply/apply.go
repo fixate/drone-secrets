@@ -27,12 +27,6 @@ var Command = cli.Command{
 	},
 }
 
-var defaultSecretEvents = []string{
-	drone.EventPush,
-	drone.EventTag,
-	drone.EventDeploy,
-}
-
 func run(c *cli.Context) error {
 	manifest, err := mfst.Load(c.String("manifest"))
 	if err != nil {
@@ -81,17 +75,13 @@ func ensureSecretsForRepo(client drone.Client, manifestSecret *mfst.SecretDef, r
 			return err
 		}
 
-		if len(secret.Events) == 0 {
-			secret.Events = defaultSecretEvents
-		}
-
-		if strings.HasPrefix(secret.Value, "@") {
-			path := strings.TrimPrefix(secret.Value, "@")
+		if strings.HasPrefix(secret.Data, "@") {
+			path := strings.TrimPrefix(secret.Data, "@")
 			out, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}
-			secret.Value = string(out)
+			secret.Data = string(out)
 		}
 
 		_, serr := client.Secret(owner, name, secret.Name)
