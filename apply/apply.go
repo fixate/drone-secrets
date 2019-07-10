@@ -44,10 +44,10 @@ func run(c *cli.Context) error {
 		return err
 	}
 
-	return processManifest(c, client, manifest)
+	return processManifest(client, manifest)
 }
 
-func processManifest(c *cli.Context, client drone.Client, manifest mfst.SecretsManifest) error {
+func processManifest(client drone.Client, manifest mfst.SecretsManifest) error {
 	for _, manifestSecret := range manifest {
 		if err := ensureSecrets(client, &manifestSecret); err != nil {
 			return err
