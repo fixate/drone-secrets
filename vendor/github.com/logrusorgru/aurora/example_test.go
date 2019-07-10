@@ -1,10 +1,10 @@
 //
-// Copyright (c) 2016 Konstanin Ivanov <kostyarin.ivanov@gmail.com>.
-// All rights reserved. This program is free software. It comes without
-// any warranty, to the extent permitted by applicable law. You can
-// redistribute it and/or modify it under the terms of the Do What
-// The Fuck You Want To Public License, Version 2, as published by
-// Sam Hocevar. See LICENSE file for more details or see below.
+// Copyright (c) 2016-2019 The Aurora Authors. All rights reserved.
+// This program is free software. It comes without any warranty,
+// to the extent permitted by applicable law. You can redistribute
+// it and/or modify it under the terms of the Do What The Fuck You
+// Want To Public License, Version 2, as published by Sam Hocevar.
+// See LICENSE file for more details or see below.
 //
 
 //
@@ -70,5 +70,5 @@ func ExampleSprintf() {
 		),
 	)
 
-	// Output: [34mwe've got [36m5[0m[34m cats, but want [1;35m25[0m[34m[0m
+	// Output: [34mwe've got [0;36m5[0;34m cats, but want [0;1;35m25[0;34m[0m
 }
