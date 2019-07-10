@@ -1,101 +1,121 @@
+// Copyright 2018 Drone.IO Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package drone
+
+import (
+	"net/http"
+)
+
+// TODO(bradrydzewski) add repo + latest build endpoint
+// TODO(bradrydzewski) add queue endpoint
+// TDOO(bradrydzewski) add stats endpoint
+// TODO(bradrydzewski) add version endpoint
 
 // Client is used to communicate with a Drone server.
 type Client interface {
+	// SetClient sets the http.Client.
+	SetClient(*http.Client)
+
+	// SetAddress sets the server address.
+	SetAddress(string)
+
 	// Self returns the currently authenticated user.
 	Self() (*User, error)
 
 	// User returns a user by login.
-	User(string) (*User, error)
+	User(login string) (*User, error)
 
 	// UserList returns a list of all registered users.
 	UserList() ([]*User, error)
 
-	// UserPost creates a new user account.
-	UserPost(*User) (*User, error)
+	// UserCreate creates a new user account.
+	UserCreate(user *User) (*User, error)
 
-	// UserPatch updates a user account.
-	UserPatch(*User) (*User, error)
+	// UserUpdate updates a user account.
+	UserUpdate(login string, user *UserPatch) (*User, error)
 
-	// UserDel deletes a user account.
-	UserDel(string) error
+	// UserDelete deletes a user account.
+	UserDelete(login string) error
 
 	// Repo returns a repository by name.
-	Repo(string, string) (*Repo, error)
+	Repo(namespace, name string) (*Repo, error)
 
-	// RepoList returns a list of all repositories to which the user has explicit
-	// access in the host system.
+	// RepoList returns a list of all repositories to which
+	// the user has explicit access in the host system.
 	RepoList() ([]*Repo, error)
 
-	// RepoPost activates a repository.
-	RepoPost(string, string) (*Repo, error)
+	// RepoListSync returns a list of all repositories to which
+	// the user has explicit access in the host system.
+	RepoListSync() ([]*Repo, error)
 
-	// RepoPatch updates a repository.
-	RepoPatch(string, string, *RepoPatch) (*Repo, error)
+	// RepoEnable activates a repository.
+	RepoEnable(namespace, name string) (*Repo, error)
 
-	// RepoMove moves the repository
-	RepoMove(string, string, string) error
+	// RepoUpdate updates a repository.
+	RepoUpdate(namespace, name string, repo *RepoPatch) (*Repo, error)
 
 	// RepoChown updates a repository owner.
-	RepoChown(string, string) (*Repo, error)
+	RepoChown(namespace, name string) (*Repo, error)
 
 	// RepoRepair repairs the repository hooks.
-	RepoRepair(string, string) error
+	RepoRepair(namespace, name string) error
 
-	// RepoDel deletes a repository.
-	RepoDel(string, string) error
+	// RepoDisable disables a repository.
+	RepoDisable(namespace, name string) error
+
+	// RepoDelete permanetnly deletes a repository.
+	RepoDelete(namespace, name string) error
 
 	// Build returns a repository build by number.
-	Build(string, string, int) (*Build, error)
+	Build(namespace, name string, build int) (*Build, error)
 
-	// BuildLast returns the latest repository build by branch. An empty branch
-	// will result in the default branch.
-	BuildLast(string, string, string) (*Build, error)
+	// BuildLast returns the latest build by branch. An
+	// empty branch will result in the default branch.
+	BuildLast(namespace, name, branch string) (*Build, error)
 
 	// BuildList returns a list of recent builds for the
 	// the specified repository.
-	BuildList(string, string) ([]*Build, error)
+	BuildList(namespace, name string, opts ListOptions) ([]*Build, error)
 
-	// BuildQueue returns a list of enqueued builds.
-	BuildQueue() ([]*Activity, error)
+	// BuildRestart re-starts a build.
+	BuildRestart(namespace, name string, build int, params map[string]string) (*Build, error)
 
-	// BuildStart re-starts a stopped build.
-	BuildStart(string, string, int, map[string]string) (*Build, error)
+	// BuildCancel stops the specified running job for
+	// given build.
+	BuildCancel(namespace, name string, build int) error
 
-	// BuildStop stops the specified running job for given build.
-	BuildStop(string, string, int, int) error
+	// BuildPurge purges the build history.
+	BuildPurge(namespace, name string, before int) error
 
-	// BuildFork re-starts a stopped build with a new build number, preserving
-	// the prior history.
-	BuildFork(string, string, int, map[string]string) (*Build, error)
+	// Approve approves a blocked build stage.
+	Approve(namespace, name string, build, stage int) error
 
-	// BuildApprove approves a blocked build.
-	BuildApprove(string, string, int) (*Build, error)
+	// Decline declines a blocked build stage.
+	Decline(namespace, name string, build, stage int) error
 
-	// BuildDecline declines a blocked build.
-	BuildDecline(string, string, int) (*Build, error)
+	// Promote promotes a build to the target environment.
+	Promote(namespace, name string, build int, target string, params map[string]string) (*Build, error)
 
-	// BuildKill force kills the running build.
-	BuildKill(string, string, int) error
+	// Rollback reverts the target environment to an previous build.
+	Rollback(namespace, name string, build int, target string, params map[string]string) (*Build, error)
 
-	// Deploy triggers a deployment for an existing build using the specified
-	// target environment.
-	Deploy(string, string, int, string, map[string]string) (*Build, error)
+	// Logs gets the logs for the specified step.
+	Logs(owner, name string, build, stage, step int) ([]*Line, error)
 
-	// Registry returns a registry by hostname.
-	Registry(owner, name, hostname string) (*Registry, error)
-
-	// RegistryList returns a list of all repository registries.
-	RegistryList(owner, name string) ([]*Registry, error)
-
-	// RegistryCreate creates a registry.
-	RegistryCreate(owner, name string, registry *Registry) (*Registry, error)
-
-	// RegistryUpdate updates a registry.
-	RegistryUpdate(owner, name string, registry *Registry) (*Registry, error)
-
-	// RegistryDelete deletes a registry.
-	RegistryDelete(owner, name, hostname string) error
+	// LogsPurge purges the build logs for the specified step.
+	LogsPurge(owner, name string, build, stage, step int) error
 
 	// Secret returns a secret by name.
 	Secret(owner, name, secret string) (*Secret, error)
@@ -111,4 +131,95 @@ type Client interface {
 
 	// SecretDelete deletes a secret.
 	SecretDelete(owner, name, secret string) error
+
+	// OrgSecret returns a secret by name.
+	OrgSecret(namespace, secret string) (*Secret, error)
+
+	// OrgSecretList returns a list of all repository secrets.
+	OrgSecretList(namespace string) ([]*Secret, error)
+
+	// OrgSecretListAll returns a list of all repository secrets.
+	OrgSecretListAll() ([]*Secret, error)
+
+	// OrgSecretCreate creates a registry.
+	OrgSecretCreate(namespace string, secret *Secret) (*Secret, error)
+
+	// OrgSecretUpdate updates a registry.
+	OrgSecretUpdate(namespace string, secret *Secret) (*Secret, error)
+
+	// OrgSecretDelete deletes a secret.
+	OrgSecretDelete(namespace, name string) error
+
+	// Cron returns a cronjob by name.
+	Cron(owner, name, cron string) (*Cron, error)
+
+	// CronList returns a list of all repository cronjobs.
+	CronList(owner string, name string) ([]*Cron, error)
+
+	// CronCreate creates a cronjob.
+	CronCreate(owner, name string, in *Cron) (*Cron, error)
+
+	// CronDelete deletes a cronjob.
+	CronDelete(owner, name, cron string) error
+
+	// CronUpdate enables a cronjob.
+	CronUpdate(owner, name, cron string, in *CronPatch) (*Cron, error)
+
+	// Sign signs the yaml file.
+	Sign(owner, name, file string) (string, error)
+
+	// Verify verifies the yaml signature.
+	Verify(owner, name, file string) error
+
+	// Encrypt returns an encrypted secret
+	Encrypt(owner, name string, secret *Secret) (string, error)
+
+	// Queue returns a list of queue items.
+	Queue() ([]*Stage, error)
+
+	// QueuePause pauses queue operations.
+	QueuePause() error
+
+	// QueueResume resumes queue operations.
+	QueueResume() error
+
+	// Node returns a node by name.
+	Node(name string) (*Node, error)
+
+	// NodeList returns a list of all nodes.
+	NodeList() ([]*Node, error)
+
+	// NodeCreate creates a node.
+	NodeCreate(in *Node) (*Node, error)
+
+	// NodeDelete deletes a node.
+	NodeDelete(name string) error
+
+	// NodeUpdate updates a node.
+	NodeUpdate(name string, in *NodePatch) (*Node, error)
+
+	//
+	// Move to autoscaler-go
+	//
+
+	// Server returns the named servers details.
+	Server(name string) (*Server, error)
+
+	// ServerList returns a list of all active build servers.
+	ServerList() ([]*Server, error)
+
+	// ServerCreate creates a new server.
+	ServerCreate() (*Server, error)
+
+	// ServerDelete terminates a server.
+	ServerDelete(name string) error
+
+	// AutoscalePause pauses the autoscaler.
+	AutoscalePause() error
+
+	// AutoscaleResume resumes the autoscaler.
+	AutoscaleResume() error
+
+	// AutoscaleVersion returns the autoscaler version.
+	AutoscaleVersion() (*Version, error)
 }

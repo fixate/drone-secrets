@@ -6,8 +6,7 @@ Aurora
 [![Build Status](https://travis-ci.org/logrusorgru/aurora.svg)](https://travis-ci.org/logrusorgru/aurora)
 [![Coverage Status](https://coveralls.io/repos/logrusorgru/aurora/badge.svg?branch=master)](https://coveralls.io/r/logrusorgru/aurora?branch=master)
 [![GoReportCard](https://goreportcard.com/badge/logrusorgru/aurora)](https://goreportcard.com/report/logrusorgru/aurora)
-[![Gitter](https://img.shields.io/badge/chat-on_gitter-46bc99.svg?logo=data:image%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTQiIHdpZHRoPSIxNCI%2BPGcgZmlsbD0iI2ZmZiI%2BPHJlY3QgeD0iMCIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iNSIvPjxyZWN0IHg9IjIiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjciLz48cmVjdCB4PSI0IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSI3Ii8%2BPHJlY3QgeD0iNiIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iNCIvPjwvZz48L3N2Zz4%3D&logoWidth=10)](https://gitter.im/logrusorgru/aurora) | 
-[![paypal gratuity](https://img.shields.io/badge/paypal-gratuity-3480a1.svg?logo=data:image%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAwIDEwMDAiPjxwYXRoIGZpbGw9InJnYigyMjAsMjIwLDIyMCkiIGQ9Ik04ODYuNiwzMDUuM2MtNDUuNywyMDMuMS0xODcsMzEwLjMtNDA5LjYsMzEwLjNoLTc0LjFsLTUxLjUsMzI2LjloLTYybC0zLjIsMjEuMWMtMi4xLDE0LDguNiwyNi40LDIyLjYsMjYuNGgxNTguNWMxOC44LDAsMzQuNy0xMy42LDM3LjctMzIuMmwxLjUtOGwyOS45LTE4OS4zbDEuOS0xMC4zYzIuOS0xOC42LDE4LjktMzIuMiwzNy43LTMyLjJoMjMuNWMxNTMuNSwwLDI3My43LTYyLjQsMzA4LjktMjQyLjdDOTIxLjYsNDA2LjgsOTE2LjcsMzQ4LjYsODg2LjYsMzA1LjN6Ii8%2BPHBhdGggZmlsbD0icmdiKDIyMCwyMjAsMjIwKSIgZD0iTTc5MS45LDgzLjlDNzQ2LjUsMzIuMiw2NjQuNCwxMCw1NTkuNSwxMEgyNTVjLTIxLjQsMC0zOS44LDE1LjUtNDMuMSwzNi44TDg1LDg1MWMtMi41LDE1LjksOS44LDMwLjIsMjUuOCwzMC4ySDI5OWw0Ny4zLTI5OS42bC0xLjUsOS40YzMuMi0yMS4zLDIxLjQtMzYuOCw0Mi45LTM2LjhINDc3YzE3NS41LDAsMzEzLTcxLjIsMzUzLjItMjc3LjVjMS4yLTYuMSwyLjMtMTIuMSwzLjEtMTcuOEM4NDUuMSwxODIuOCw4MzMuMiwxMzAuOCw3OTEuOSw4My45TDc5MS45LDgzLjl6Ii8%2BPC9zdmc%2B)](https://www.paypal.me/kostyarin)
+[![Gitter](https://img.shields.io/badge/chat-on_gitter-46bc99.svg?logo=data:image%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMTQiIHdpZHRoPSIxNCI%2BPGcgZmlsbD0iI2ZmZiI%2BPHJlY3QgeD0iMCIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iNSIvPjxyZWN0IHg9IjIiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjciLz48cmVjdCB4PSI0IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSI3Ii8%2BPHJlY3QgeD0iNiIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iNCIvPjwvZz48L3N2Zz4%3D&logoWidth=10)](https://gitter.im/logrusorgru/aurora)
 
 Ultimate ANSI colors for Golang. The package supports Printf/Sprintf etc.
 
@@ -22,7 +21,7 @@ go get -u github.com/logrusorgru/aurora
 ```
 Test
 ```
-go test github.com/logrusorgru/aurora
+go test -cover github.com/logrusorgru/aurora
 ```
 
 # Usage
@@ -165,24 +164,80 @@ a `Colorize` clears previous colors
 x := Red("x").Colorize(BgGreen) // will be with green background only
 ```
 
+# Grayscale
+
+```go
+fmt.Println("  ",
+	Gray(1-1, " 00-23 ").BgGray(24-1),
+	Gray(4-1, " 03-19 ").BgGray(20-1),
+	Gray(8-1, " 07-15 ").BgGray(16-1),
+	Gray(12-1, " 11-11 ").BgGray(12-1),
+	Gray(16-1, " 15-07 ").BgGray(8-1),
+	Gray(20-1, " 19-03 ").BgGray(4-1),
+	Gray(24-1, " 23-00 ").BgGray(1-1),
+)
+```
+
+![grayscale png](https://github.com/logrusorgru/aurora/blob/master/aurora_grayscale.png)  
+
+# 8-bit colors
+
+Methods `Index` and `BgIndex` implements 8-bit colors.
+
+| Index/BgIndex  |    Meaning      | Foreground | Background |
+| -------------- | --------------- | ---------- | ---------- |
+|      0-  7     | standard colors |   30- 37   |   40- 47   |
+|      8- 15     | bright colors   |   90- 97   |  100-107   |
+|     16-231     | 216 colors      |   38;5;n   |   48;5;n   |
+|    232-255     | 24 grayscale    |   38;5;n   |   48;5;n   |
+
 
 # Supported colors & formats
 
-- background and foreground colors
+- formats
+  + bold (1)
+  + faint (2)
+  + doubly-underline (21)
+  + fraktur (20)
+  + italic (3)
+  + underline (4)
+  + slow blink (5)
+  + rapid blink (6)
+  + reverse video (7)
+  + conceal (8)
+  + crossed out (9)
+  + framed (51)
+  + encircled (52)
+  + overlined (53)
+- background and foreground colors, including bright
   + black
   + red
   + green
-  + brown
-  + blue
+  + yellow (brown)
+  +  blue
   + magenta
   + cyan
-  + gray
-- formats
-  + bold
-  + inversed
+  + white
+  + 24 grayscale colors
+  + 216 8-bit colors
 
-![linux png](https://github.com/logrusorgru/aurora/blob/master/linux_colors.png)  
-![white png](https://github.com/logrusorgru/aurora/blob/master/white.png)
+### All colors
+
+![linux png](https://github.com/logrusorgru/aurora/blob/master/aurora_colors_black.png)  
+![white png](https://github.com/logrusorgru/aurora/blob/master/aurora_colors_white.png)  
+
+### Standard colors
+
+![linux black standard png](https://github.com/logrusorgru/aurora/blob/master/aurora_black_standard.png)
+![linux white standard png](https://github.com/logrusorgru/aurora/blob/master/aurora_white_standard.png)
+
+### Formats are likely supported
+
+![formats supported gif](https://github.com/logrusorgru/aurora/blob/master/aurora_formats.gif)
+
+### Formats are likely unsupported
+
+![formats rarely supported png](https://github.com/logrusorgru/aurora/blob/master/aurora_rarely_supported.png)
 
 # Limitations
 
@@ -215,10 +270,10 @@ The obvious workaround is `Red(fmt.Sprintf("%T", some))`
 
 ### Licensing
 
-Copyright &copy; 2016-2107 Konstantin Ivanov <kostyarin.ivanov@gmail.com>  
-This work is free. It comes without any warranty, to the extent permitted
-by applicable law.  You can redistribute it and/or modify it under the
-terms of the Do What The Fuck You Want To Public License, Version 2,
-as published by Sam Hocevar. See the LICENSE file for more details.
+Copyright &copy; 2016-2109 The Aurora Authors. This work is free.
+It comes without any warranty, to the extent permitted by applicable
+law. You can redistribute it and/or modify it under the terms of the
+Do What The Fuck You Want To Public License, Version 2, as published
+by Sam Hocevar. See the LICENSE file for more details.
 
 

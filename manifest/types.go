@@ -1,7 +1,6 @@
 package manifest
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/drone/drone-go/drone"
@@ -10,8 +9,7 @@ import (
 type Secret struct {
 	Name   string      `yaml:name`
 	Value  StringArray `yaml:value`
-	Images StringArray `yaml:images`
-	Events StringArray `yaml:events`
+    EnablePullRequests bool `yaml:enable_pull_requests`
 }
 
 type SecretDef struct {
@@ -42,39 +40,16 @@ func (a *StringArray) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return nil
 }
 
-func toDroneEvent(event string) (string, error) {
-	switch event {
-	case "pr", "pull-request", "pull":
-		return drone.EventPull, nil
-	case "push":
-		return drone.EventPush, nil
-	case "tag":
-		return drone.EventTag, nil
-	case "deployment":
-		return drone.EventDeploy, nil
-
-	default:
-		return "", fmt.Errorf("manifest: Invalid event type '%s'", event)
-	}
-}
-
 func (inst *Secret) ToDroneSecret() (*drone.Secret, error) {
 	converted := &drone.Secret{}
 	converted.Name = inst.Name
 
 	if len(inst.Value) != 0 {
-		converted.Value = strings.Join(inst.Value, ",")
+		converted.Data = strings.Join(inst.Value, ",")
 	}
-	converted.Images = inst.Images
 
-	for _, evt := range inst.Events {
-		convertedEvt, err := toDroneEvent(evt)
-		if err != nil {
-			return converted, err
-		}
-
-		converted.Events = append(converted.Events, convertedEvt)
-	}
+	converted.PullRequestPush = inst.EnablePullRequests;
+	converted.PullRequest = inst.EnablePullRequests;
 
 	return converted, nil
 }
